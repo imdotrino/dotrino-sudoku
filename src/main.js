@@ -43,7 +43,7 @@ const toastEl = h('div', { class: 'toast' });
 clear(app).append(screen, toastEl);
 
 const support = h('dotrino-support', {
-  href: 'https://ko-fi.com/dotrino', repo: 'dotrino/sudoku', discord: 'https://discord.gg/D648uq7cth',
+  href: 'https://ko-fi.com/dotrino', repo: 'imdotrino/dotrino-sudoku', discord: 'https://discord.gg/D648uq7cth',
 });
 const shareEl = h('dotrino-share', { lang: getLang() });
 shareEl.addEventListener('cc-share-close', () => { shareEl.open = false; });
