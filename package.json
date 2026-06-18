@@ -1,0 +1,24 @@
+{
+  "name": "sudoku",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Sudoku del ecosistema Dotrino (Vite, sin framework). Generador determinista por semilla, 4 dificultades, reto diario, notas, pistas y persistencia en tu store.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@dotrino/install": "0.1.1",
+    "@dotrino/nav": "0.2.0",
+    "@dotrino/share": "0.3.0",
+    "@dotrino/store": "^0.3.0",
+    "@dotrino/tutorial": "0.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "vite": "^7.3.1"
+  }
+}
