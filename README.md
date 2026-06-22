@@ -1,5 +1,7 @@
 # Sudoku — Dotrino
 
+> **Parte del ecosistema [Dotrino](https://dotrino.com).** Misión: aplicaciones que resuelven problemas comunes, respetando tu privacidad — sin anuncios, sin cookies, sin rastreo de datos, sin vender tu identidad a nadie.
+
 Sudoku del ecosistema **[Dotrino](https://dotrino.com/)**: *tu información, en
 tu servidor, bajo tus reglas*. PWA instalable, **funciona sin conexión** y **sin
 trackers de terceros**.
