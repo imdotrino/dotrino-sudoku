@@ -88,7 +88,20 @@ const DICT = {
   },
 };
 
-const LS_LANG = 'sudoku.lang';
+// El idioma lo manda <dotrino-topbar>, que persiste en 'dotrino.lang' (clave del
+// ecosistema, compartida entre apps). Antes teníamos la nuestra ('sudoku.lang'):
+// se migra UNA vez para no resetearle el idioma a quien ya lo había elegido.
+const LS_LANG = 'dotrino.lang';
+const LS_LANG_OLD = 'sudoku.lang';
+(function migrateLangKey() {
+  try {
+    if (localStorage.getItem(LS_LANG)) return;          // el ecosistema ya manda
+    const old = localStorage.getItem(LS_LANG_OLD);
+    if (old === 'es' || old === 'en') localStorage.setItem(LS_LANG, old);
+    localStorage.removeItem(LS_LANG_OLD);
+  } catch {}
+})();
+
 let lang = (() => {
   try { const s = localStorage.getItem(LS_LANG); if (s === 'es' || s === 'en') return s; } catch {}
   return (navigator.language || 'es').toLowerCase().startsWith('en') ? 'en' : 'es';

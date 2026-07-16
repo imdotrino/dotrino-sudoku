@@ -39,18 +39,22 @@ body::before {
 #app { min-height: 100%; display: flex; flex-direction: column; }
 button { font-family: inherit; cursor: pointer; }
 
-/* ---------- Topbar ---------- */
-.topbar {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  padding: calc(env(safe-area-inset-top) + 10px) 14px 10px;
-  padding-left: calc(env(safe-area-inset-left) + 14px);
-  padding-right: calc(env(safe-area-inset-right) + 14px);
+/* ---------- Topbar: <dotrino-topbar> (§5) ----------
+   El header ya no se arma a mano: lo trae el componente del ecosistema (marca +
+   volver + idioma + perfil + moneda), con su fila móvil y safe-area. Aquí solo
+   lo vestimos con la paleta de la app y decidimos cuándo se ve. */
+dotrino-topbar {
+  --dotrino-topbar-bg: transparent;      /* el fondo lo pone la atmósfera de body */
+  --dotrino-topbar-border: transparent;
+  --dotrino-topbar-text: var(--text);
+  --dotrino-topbar-muted: var(--muted);
+  --dotrino-topbar-accent: var(--accent);
+  --dotrino-topbar-font: inherit;
 }
-.brand { display: flex; align-items: center; gap: 9px; order: 0; }
-.brand img { width: 30px; height: 30px; display: block; }
-.brand span { font-weight: 800; font-size: 1.18rem; letter-spacing: .2px; }
-.topbar .spacer { flex: 1 1 auto; order: 1; }
-.topbar .actions { display: flex; align-items: center; gap: 8px; order: 2; }
+/* En la vista de juego el tablero manda: el topbar se va y la moneda flota
+   (como siempre hizo esta app). Nunca se ven las dos monedas a la vez. */
+body.mode-game dotrino-topbar { display: none; }
+body:not(.mode-game) dotrino-support[floating] { display: none; }
 
 .btn {
   border: 1px solid var(--border); background: var(--surface);
@@ -66,15 +70,8 @@ button { font-family: inherit; cursor: pointer; }
 .icon-btn { padding: 8px; }
 .icon-btn svg { display: block; }
 
-.lang-selector { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-.lang-selector button {
-  background: transparent; color: var(--muted); border: 0; padding: 7px 11px;
-  font-size: .82rem; font-weight: 700;
-}
-.lang-selector button.on { background: var(--accent); color: #fff; }
-
+/* El botón de instalar viaja por slot="end" → vive en light DOM y lo viste la app. */
 .cc-install { --cci-bg: var(--surface); --cci-text: var(--text); --cci-border: var(--border); }
-.topbar-coin { margin-left: 2px; }
 
 /* ---------- Vista de juego ---------- */
 .view {
@@ -259,12 +256,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ---------- Responsive topbar (segunda fila) ---------- */
-@media (max-width: 560px) {
-  .brand span { font-size: 1.05rem; }
-  .topbar .actions { flex-basis: 100%; order: 3; justify-content: flex-end; }
-  .topbar .spacer { display: none; }
-}
+/* La segunda fila de acciones en móvil (§5) ya la trae <dotrino-topbar>. */
 
 dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
 

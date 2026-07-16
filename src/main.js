@@ -14,10 +14,14 @@ import {
   firstNodeId,
 } from './levels.js';
 import { createBoard } from './board.js';
+import { getIdentity } from './services/identity.js';
+import { getReputation } from './services/reputation.js';
 import { createBackNav } from '@dotrino/nav';
 import { createTutorial } from '@dotrino/tutorial';
 import '@dotrino/install';
 import '@dotrino/share';
+import '@dotrino/support';   // moneda flotante de la vista de juego (en el mapa la pone el topbar)
+import '@dotrino/topbar';    // barra superior estándar del ecosistema (§5)
 
 // ---------- Iconos (SVG de confianza) ----------
 const SVG = (p, fill) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="${fill || 'none'}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
@@ -40,17 +44,79 @@ const STARTING_HINTS = 3;
 const app = document.getElementById('app');
 const screen = h('div', { class: 'screen' });
 const toastEl = h('div', { class: 'toast' });
-clear(app).append(screen, toastEl);
 
+// Controlador de "volver" del ecosistema. Se crea ANTES de montar el topbar a
+// propósito: el componente instala el suyo solo si no hay ninguno, y dos
+// controladores = dos manejadores de popstate peleándose el botón físico.
+// Con este orden, el chevron del topbar y la capa del juego comparten el mismo.
+const nav = createBackNav();
+
+// ---------- Topbar estándar del ecosistema (§5 / §6 / §6.1 / §9) ----------
+// Trae marca + volver + idioma + perfil + moneda de support en UN componente: la
+// app ya no reimplementa el header. VIVE FUERA de `screen` a propósito: cada
+// render lo vacía, y recrear el topbar en cada pintada haría parpadear la barra
+// y reinstalaría su capa de "volver".
+const topbar = h('dotrino-topbar', {
+  brand: t('brand'), icon: 'icon.svg', 'brand-href': './', lang: getLang(),
+  home: 'https://dotrino.com', profile: true,
+  'support-href': 'https://ko-fi.com/dotrino',
+  'support-repo': 'imdotrino/dotrino-sudoku',
+  'support-discord': 'https://discord.gg/D648uq7cth',
+});
+// El botón de instalar va en el cluster derecho del topbar (slot 'end').
+const installBtn = h('dotrino-install', {
+  slot: 'end', class: 'cc-install sm', 'data-testid': 'install-btn', lang: getLang(),
+});
+topbar.append(installBtn);
+clear(app).append(topbar, screen, toastEl);
+
+// Tema del modal "Mi perfil" (vars --ccp-*) con la paleta oscura de la app.
+topbar.profileTheme = {
+  '--ccp-bg': '#151d33', '--ccp-bg-2': '#1b2542', '--ccp-bg-3': '#202c4d', '--ccp-bg-4': '#283350',
+  '--ccp-border': '#283350', '--ccp-text': '#e6ecfb', '--ccp-muted': '#8b97b8',
+  '--ccp-accent': '#3b82f6', '--ccp-accent-2': '#60a5fa', '--ccp-accent-text': '#ffffff',
+  '--ccp-gold': '#fbbf24', '--ccp-derived': '#fcd34d',
+  '--ccp-online': '#34d399', '--ccp-affinity': '#60a5fa', '--ccp-input-bg': '#121a30',
+  '--ccp-radius': '14px',
+  '--ccp-font': "'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif",
+};
+
+// Identidad del ecosistema (vault): habilita el modal "Mi perfil" del topbar.
+// Si el vault no responde, el topbar deja el botón con el ícono genérico.
+(async () => {
+  const id = await getIdentity();
+  if (!id) return;
+  topbar.identity = id;
+  const rep = await getReputation();
+  if (rep) topbar.reputation = rep;
+})();
+
+// El idioma lo manda el topbar (§9): es la única fuente de verdad. La app ya no
+// pinta su propio toggle; solo reacciona y propaga a lo que vive en light DOM.
+topbar.addEventListener('dotrino-lang', (e) => {
+  const l = e.detail && e.detail.lang === 'en' ? 'en' : 'es';
+  setLang(l);
+  topbar.setAttribute('lang', l);
+  installBtn.setAttribute('lang', l);   // light DOM: hay que pasárselo a mano
+  support.setAttribute('lang', l);
+  shareEl.lang = l;
+  if (view === 'game' && game) renderGame(); else renderMap();
+});
+
+// Moneda flotante SOLO para la vista de juego: ahí el tablero ocupa la pantalla,
+// el topbar se oculta (body.mode-game) y la moneda flota, como hasta ahora. En el
+// mapa la moneda es la del topbar; el CSS muestra una u otra, nunca las dos.
 const support = h('dotrino-support', {
+  floating: true, lang: getLang(),
   href: 'https://ko-fi.com/dotrino', repo: 'imdotrino/dotrino-sudoku', discord: 'https://discord.gg/D648uq7cth',
 });
+app.append(support);
+
 const shareEl = h('dotrino-share', { lang: getLang() });
 shareEl.addEventListener('cc-share-close', () => { shareEl.open = false; });
 shareEl.addEventListener('cc-share-shared', onShared);
 app.append(shareEl);
 
-const nav = createBackNav();
 let gameLayer = null;
 let mapTour = null, gameTour = null;
 
@@ -125,13 +191,6 @@ function dailyDifficulty() {
   return diffs[new Date().getDay()];
 }
 
-function coinInTopbar(container) {
-  support.removeAttribute('floating'); support.className = 'topbar-coin'; container.append(support);
-}
-function coinFloating() {
-  support.className = ''; support.setAttribute('floating', ''); app.append(support);
-}
-
 // ---------- Persistencia ----------
 // Clave estable por partida: nivel (nodo), reto diario o puzzle compartido.
 function ctxKey(ctx) {
@@ -189,17 +248,7 @@ function renderMap() {
   view = 'map';
   closeGameLayer();
   stopTimer();
-  coinFloating();
-  document.body.classList.remove('mode-game');
-
-  const top = h('header', { class: 'topbar' },
-    h('div', { class: 'brand' }, h('img', { src: 'icon.svg', alt: '', width: 30, height: 30 }), h('span', {}, t('brand'))),
-    h('div', { class: 'spacer' }),
-    h('div', { class: 'actions' },
-      langSelector(() => renderMap()),
-      h('dotrino-install', { class: 'cc-install sm', 'data-testid': 'install-btn', lang: getLang() }),
-    ),
-  );
+  document.body.classList.remove('mode-game');   // muestra el topbar, oculta la moneda flotante
 
   const total = totalStars(progress);
   const starsBar = h('div', { class: 'stars-bar' },
@@ -237,8 +286,7 @@ function renderMap() {
 
   const mapWrap = renderMapGraph();
 
-  clear(screen).append(top, starsBar, cards, mapWrap);
-  coinInTopbar(top.querySelector('.actions'));
+  clear(screen).append(starsBar, cards, mapWrap);
 
   // El mapa sube: enfocar el nodo actual (o el fondo, donde está el nivel 1) para
   // que el jugador vea dónde está sin tener que desplazarse.
@@ -330,13 +378,6 @@ function renderMapGraph() {
   return h('div', { class: 'map-scroll', 'data-testid': 'map' }, inner);
 }
 
-function langSelector(after) {
-  return h('div', { class: 'lang-selector', role: 'group', 'aria-label': 'es / en' },
-    h('button', { class: getLang() === 'es' ? 'on' : '', onclick: () => { setLang('es'); shareEl.lang = 'es'; after(); } }, 'ES'),
-    h('button', { class: getLang() === 'en' ? 'on' : '', onclick: () => { setLang('en'); shareEl.lang = 'en'; after(); } }, 'EN'),
-  );
-}
-
 // =====================================================================
 //  Arranque de partidas
 // =====================================================================
@@ -384,8 +425,7 @@ function startShared(givens) {
 // =====================================================================
 function openGame() {
   view = 'game';
-  document.body.classList.add('mode-game');
-  coinFloating();
+  document.body.classList.add('mode-game');   // oculta el topbar; la moneda pasa a flotar
   if (!board) board = createBoard({ onSelect: onSelect, onDigit: onDigit, onDrop: onDrop });
   renderGame();
   startTimer();
