@@ -2,6 +2,7 @@
 // Español neutro / de Ecuador: TUTEO (tú), nunca voseo ni argentinismos.
 const DICT = {
   es: {
+    storeProblem: 'No se pudo abrir tu almacén: esta partida no se guardará.',
     brand: 'Sudoku',
 
     // Mapa / aventura
@@ -47,6 +48,7 @@ const DICT = {
     multiSolution: 'Este puzzle tiene varias soluciones; solo se marcan los errores de regla.',
   },
   en: {
+    storeProblem: 'Could not open your storage: this game will not be saved.',
     brand: 'Sudoku',
 
     journey: 'Journey', map: 'Map', stars: 'stars',

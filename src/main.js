@@ -169,10 +169,12 @@ let lastTick = 0;
 let saveTimer = null;
 
 // ---------- Utilidades ----------
-function showToast(msg) {
+function showToast(msg, ms = 2400) {
   toastEl.textContent = msg; toastEl.classList.add('show');
-  clearTimeout(showToast._t); showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2400);
+  clearTimeout(showToast._t); showToast._t = setTimeout(() => toastEl.classList.remove('show'), ms);
 }
+// Si el almacén no abre, la partida sigue pero NO se guarda: se dice (store.js, sin repliegue).
+import('./store.js').then(({ onStoreProblem }) => onStoreProblem(() => showToast('⚠ ' + t('storeProblem'), 8000)));
 function fmtTime(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   const m = Math.floor(s / 60);
