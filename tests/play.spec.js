@@ -4,6 +4,8 @@ import { test, expect } from '@playwright/test'
 // que ninguna burbuja intercepte los clics. Arranca limpio en cada test.
 async function open(page) {
   await page.addInitScript(() => {
+    // Sin bóveda de identidad en localhost: que el juego no la espere (ver services/identity.js).
+    window.__TEST_VAULT_PROMISE__ = Promise.resolve(null)
     try {
       localStorage.setItem('sudoku.lang', 'es')
       for (const id of ['stars', 'pick', 'play', 'notes', 'hint', 'share']) {

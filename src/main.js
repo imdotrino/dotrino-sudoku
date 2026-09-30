@@ -87,6 +87,8 @@ topbar.profileTheme = {
   const id = await getIdentity();
   if (!id) return;
   topbar.identity = id;
+  // El estado del respaldo en la bóveda, en el botón de perfil (topbar ≥ 0.13).
+  import('./store.js').then(m => m.storeHandle()).then(s => { if (s) topbar.store = s; }).catch(() => {});
   const rep = await getReputation();
   if (rep) topbar.reputation = rep;
 })();

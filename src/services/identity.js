@@ -6,6 +6,10 @@ let identity = null;
 
 /** Instancia compartida de identidad (o null si el vault no responde). */
 export async function getIdentity() {
+  // Hook SOLO para E2E: las pruebas corren en localhost, donde id.dotrino.com no contesta
+  // (silencio para orígenes de fuera del ecosistema). En producción nunca está puesto.
+  const testVault = globalThis.__TEST_VAULT_PROMISE__;
+  if (testVault) return testVault;
   if (identity) return identity;
   try {
     identity = await Identity.connect();
