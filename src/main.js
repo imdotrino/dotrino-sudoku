@@ -1,3 +1,4 @@
+import '@dotrino/theme/theme.css'
 import './style.css';
 import { h, clear } from './dom.js';
 import { t, getLang, setLang } from './i18n.js';
@@ -58,7 +59,7 @@ const nav = createBackNav();
 // y reinstalaría su capa de "volver".
 const topbar = h('dotrino-topbar', {
   brand: t('brand'), icon: 'icon.svg', 'brand-href': './', lang: getLang(),
-  home: 'https://dotrino.com', profile: true,
+  home: 'https://dotrino.com', profile: true, theme: true,
   'support-href': 'https://ko-fi.com/dotrino',
   'support-repo': 'imdotrino/dotrino-sudoku',
   'support-discord': 'https://discord.gg/D648uq7cth',
@@ -69,17 +70,6 @@ const installBtn = h('dotrino-install', {
 });
 topbar.append(installBtn);
 clear(app).append(topbar, screen, toastEl);
-
-// Tema del modal "Mi perfil" (vars --ccp-*) con la paleta oscura de la app.
-topbar.profileTheme = {
-  '--ccp-bg': '#151d33', '--ccp-bg-2': '#1b2542', '--ccp-bg-3': '#202c4d', '--ccp-bg-4': '#283350',
-  '--ccp-border': '#283350', '--ccp-text': '#e6ecfb', '--ccp-muted': '#8b97b8',
-  '--ccp-accent': '#3b82f6', '--ccp-accent-2': '#60a5fa', '--ccp-accent-text': '#ffffff',
-  '--ccp-gold': '#fbbf24', '--ccp-derived': '#fcd34d',
-  '--ccp-online': '#34d399', '--ccp-affinity': '#60a5fa', '--ccp-input-bg': '#121a30',
-  '--ccp-radius': '14px',
-  '--ccp-font': "'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif",
-};
 
 // Identidad del ecosistema (vault): habilita el modal "Mi perfil" del topbar.
 // Si el vault no responde, el topbar deja el botón con el ícono genérico.
@@ -145,7 +135,7 @@ function ensureGameTutorial() {
     steps: [
       { id: 'play', target: '[data-testid="board"]', placement: 'top',
         title: { es: 'Cómo jugar', en: 'How to play' },
-        text: { es: 'Elige un número y toca las casillas para colocarlo; tócala otra vez con el mismo número para borrarlo, o usa la goma. Tus números van en azul, las pistas en blanco y los errores en rojo.', en: 'Pick a number, then tap cells to place it; tap again with the same number to remove it, or use the eraser. Your numbers are blue, clues white, mistakes red.' } },
+        text: { es: 'Elige un número y toca las casillas para colocarlo; tócala otra vez con el mismo número para borrarlo, o usa la goma. Tus números van en azul, las pistas en negrita sobre gris y los errores en rojo.', en: 'Pick a number, then tap cells to place it; tap again with the same number to remove it, or use the eraser. Your numbers are blue, clues bold on grey, mistakes red.' } },
       { id: 'notes', target: '[data-testid="tool-notes"]', placement: 'top',
         title: { es: 'Notas', en: 'Notes' },
         text: { es: 'Activa las notas, elige un número y tócalo en las casillas como candidato. Los candidatos imposibles salen en rojo.', en: 'Turn on notes, pick a number and tap cells to pencil it as a candidate. Impossible candidates show in red.' } },

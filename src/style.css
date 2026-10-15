@@ -1,22 +1,23 @@
 :root {
-  --bg1: #0b1020;
-  --bg2: #0e1733;
-  --surface: #151d33;
-  --surface2: #1b2542;
-  --border: #283350;
-  --line: #2a3656;          /* líneas finas del tablero */
-  --line-strong: #4a64a0;   /* separadores de cajas 3×3 */
-  --cell-bg: #121a30;
-  --cell-given-bg: #202c4d;   /* pistas (givens) sobre fondo más claro = "impresas" */
-  --text: #e6ecfb;
-  --muted: #8b97b8;
-  --accent: #3b82f6;
-  --accent-2: #60a5fa;
-  --given: #f3f6ff;           /* pista: blanco y en negrita */
-  --user: #54a0ff;            /* tu número: azul, más fino */
-  --note: #7c89ad;
-  --danger: #f87171;
-  --ok: #34d399;
+  /* Colores del ecosistema (@dotrino/theme, CONVENCIONES §5): aquí solo se nombran. */
+  --bg1: var(--dt-bg);
+  --bg2: var(--dt-bg-2);
+  --surface: var(--dt-surface);
+  --surface2: var(--dt-surface-2);
+  --border: var(--dt-line-soft);
+  --line: var(--dt-line);          /* líneas finas del tablero */
+  --line-strong: var(--dt-text-faint);   /* separadores de cajas 3×3 */
+  --cell-bg: var(--dt-surface);
+  --cell-given-bg: var(--dt-surface-3);   /* pistas (givens) sobre fondo más claro = "impresas" */
+  --text: var(--dt-text);
+  --muted: var(--dt-text-dim);
+  --accent: var(--dt-accent);
+  --accent-2: var(--dt-accent-press);
+  --given: var(--dt-text);           /* pista: en negrita */
+  --user: var(--dt-accent);            /* tu número: azul, más fino */
+  --note: var(--dt-text-faint);
+  --danger: var(--dt-error);
+  --ok: var(--dt-ok);
   --radius: 14px;
 }
 
@@ -24,7 +25,7 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--dt-font);
   color: var(--text);
   background: var(--bg1);
   -webkit-user-select: none; user-select: none;
@@ -44,12 +45,7 @@ button { font-family: inherit; cursor: pointer; }
    volver + idioma + perfil + moneda), con su fila móvil y safe-area. Aquí solo
    lo vestimos con la paleta de la app y decidimos cuándo se ve. */
 dotrino-topbar {
-  --dotrino-topbar-bg: transparent;      /* el fondo lo pone la atmósfera de body */
-  --dotrino-topbar-border: transparent;
-  --dotrino-topbar-text: var(--text);
-  --dotrino-topbar-muted: var(--muted);
-  --dotrino-topbar-accent: var(--accent);
-  --dotrino-topbar-font: inherit;
+      /* el fondo lo pone la atmósfera de body */
 }
 /* En la vista de juego el tablero manda: el topbar se va y la moneda flota
    (como siempre hizo esta app). Nunca se ven las dos monedas a la vez. */
@@ -64,7 +60,7 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 }
 .btn:hover { background: var(--surface2); }
 .btn:active { transform: translateY(1px); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--dt-accent-ink); }
 .btn.primary:hover { background: var(--accent-2); }
 .btn-ghost { background: transparent; }
 .icon-btn { padding: 8px; }
@@ -128,9 +124,9 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 .cell.given { background: var(--cell-given-bg); color: var(--given); font-weight: 800; cursor: default; }
 .cell.user { color: var(--user); font-weight: 600; }
 .cell.hinted { color: var(--ok); font-weight: 700; }
-.cell.peer { background: #161f3a; }
-.cell.given.peer { background: #2a3a63; }
-.cell.same { background: #1d2c52; }
+.cell.peer { background: var(--dt-accent-tint); }
+.cell.given.peer { background: color-mix(in srgb, var(--dt-accent) 14%, var(--dt-surface-3)); }
+.cell.same { background: var(--dt-accent-soft); }
 .cell.selected { background: color-mix(in srgb, var(--accent) 42%, var(--cell-bg)); }
 /* Número equivocado (no coincide con la solución): rojo, para saber cuál borrar. */
 .cell.wrong { color: var(--danger); font-weight: 700; }
@@ -160,13 +156,13 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 .tool:hover { background: var(--surface2); }
 .tool:disabled { opacity: .42; cursor: not-allowed; }
 .tool svg { width: 22px; height: 22px; }
-.tool.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tool.active { background: var(--accent); border-color: var(--accent); color: var(--dt-accent-ink); }
 .tool .badge {
   position: absolute; top: 4px; right: 8px; font-size: .6rem; font-weight: 700;
-  background: var(--accent); color: #fff; border-radius: 999px; min-width: 15px;
+  background: var(--accent); color: var(--dt-accent-ink); border-radius: 999px; min-width: 15px;
   height: 15px; padding: 0 4px; display: flex; align-items: center; justify-content: center;
 }
-.tool.active .badge { background: #fff; color: var(--accent); }
+.tool.active .badge { background: var(--dt-accent-ink); color: var(--accent); }
 
 .pad { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; width: min(94vw, 60vh, 460px); margin: 0 auto; }
 .pad-btn {
@@ -184,9 +180,9 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 .pad-btn.done { opacity: .4; }
 .pad.notes-mode .pad-btn { border-color: var(--accent); color: var(--accent-2); }
 /* Dígito "en la mano" (modo número primero): resaltado y relleno. */
-.pad-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
-.pad-btn.active .pad-n, .pad-btn.active .pad-count { color: #fff; }
-.pad.notes-mode .pad-btn.active { background: var(--accent); color: #fff; }
+.pad-btn.active { background: var(--accent); border-color: var(--accent); color: var(--dt-accent-ink); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+.pad-btn.active .pad-n, .pad-btn.active .pad-count { color: var(--dt-accent-ink); }
+.pad.notes-mode .pad-btn.active { background: var(--accent); color: var(--dt-accent-ink); }
 .pad-btn { touch-action: none; }   /* arrastrar el número sin que la página scrollee */
 
 /* Fantasma que sigue al dedo/ratón al arrastrar un número */
@@ -194,7 +190,7 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
   position: fixed; z-index: 95; pointer-events: none;
   transform: translate(-50%, -150%);
   width: 46px; height: 46px; border-radius: 12px;
-  background: var(--accent); color: #fff; font-weight: 800; font-size: 1.5rem;
+  background: var(--accent); color: var(--dt-accent-ink); font-weight: 800; font-size: 1.5rem;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 20px rgba(0,0,0,.5);
 }
@@ -235,7 +231,7 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 .win-stars { display: flex; justify-content: center; gap: 12px; margin: 6px 0 2px; }
 .win-stars .ws svg { width: 42px; height: 42px; }
 .win-stars .ws { color: var(--border); transform: scale(.55); opacity: .4; line-height: 0; }
-.win-stars .ws.on { color: #fbbf24; transform: scale(.4); opacity: 0; animation: starpop .45s ease forwards; }
+.win-stars .ws.on { color: var(--dt-gold); transform: scale(.4); opacity: 0; animation: starpop .45s ease forwards; }
 @keyframes starpop { to { transform: scale(1); opacity: 1; } }
 .win-meta { display: flex; justify-content: center; gap: 30px; margin: 14px 0 4px; }
 .win-meta .s { text-align: center; }
@@ -258,7 +254,7 @@ body:not(.mode-game) dotrino-support[floating] { display: none; }
 
 /* La segunda fila de acciones en móvil (§5) ya la trae <dotrino-topbar>. */
 
-dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
+dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: var(--dt-accent-ink); }
 
 /* ======================= Mapa / aventura ======================= */
 .screen { display: flex; flex-direction: column; min-height: 100%; }
@@ -273,7 +269,7 @@ dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
 }
 .stars-bar .ic svg { width: 19px; height: 19px; }
 .stars-total, .tips-total { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
-.stars-total .star { color: #fbbf24; }
+.stars-total .star { color: var(--dt-gold); }
 .stars-total .muted { color: var(--muted); font-weight: 600; font-size: .82rem; }
 .tips-total { color: var(--accent-2); }
 
@@ -287,11 +283,11 @@ dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
 .card:disabled { opacity: .55; }
 .card .ic svg { width: 24px; height: 24px; }
 .card.resume .ic { color: var(--accent-2); }
-.card.daily .ic { color: #fbbf24; }
+.card.daily .ic { color: var(--dt-gold); }
 .card-txt { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .card-txt b { font-size: 1rem; }
 .card-txt .muted { color: var(--muted); font-size: .82rem; }
-.streak-badge { font-weight: 800; color: #fbbf24; font-size: .9rem; }
+.streak-badge { font-weight: 800; color: var(--dt-gold); font-size: .9rem; }
 
 .map-scroll { flex: 1; display: flex; justify-content: center; padding: 6px 0 calc(env(safe-area-inset-bottom) + 30px); }
 .map-inner { position: relative; margin: 0 auto; }
@@ -309,11 +305,11 @@ dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
 .node:hover { filter: brightness(1.12); }
 .node:active { transform: translateY(1px); }
 .node .ic svg { width: 24px; height: 24px; }
-.node .crown svg { color: #fcd34d; }
+.node .crown svg { color: var(--dt-gold); }
 .node-wrap.locked .node { background: var(--surface); color: var(--muted); border-style: dashed; box-shadow: none; }
 .node-wrap.done .node { border-color: var(--accent); }
-.node-wrap.boss .node { border-radius: 18px; background: linear-gradient(160deg, #3a2c10, var(--surface2)); }
-.node-wrap.boss.done .node { border-color: #fbbf24; }
+.node-wrap.boss .node { border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--dt-gold) 25%, var(--surface2)), var(--surface2)); }
+.node-wrap.boss.done .node { border-color: var(--dt-gold); }
 .node-wrap.boss.locked .node { background: var(--surface); }
 .node-wrap.next .node { border-color: var(--accent-2); animation: nodepulse 1.7s ease-in-out infinite; }
 @keyframes nodepulse {
@@ -323,13 +319,13 @@ dotrino-share { --ccs-accent: var(--accent); --ccs-accent-text: #fff; }
 .node-stars { display: flex; gap: 2px; }
 .node-stars .ns { color: var(--border); line-height: 0; }
 .node-stars .ns svg { width: 13px; height: 13px; }
-.node-stars .ns.on { color: #fbbf24; }
-.node-gate { display: inline-flex; align-items: center; gap: 3px; font-size: .72rem; font-weight: 800; color: #fbbf24; }
+.node-stars .ns.on { color: var(--dt-gold); }
+.node-gate { display: inline-flex; align-items: center; gap: 3px; font-size: .72rem; font-weight: 800; color: var(--dt-gold); }
 .node-gate .ic svg { width: 13px; height: 13px; }
 
 /* ======================= Cabecera de juego ======================= */
 .game-head { display: flex; align-items: center; justify-content: center; position: relative; padding: calc(env(safe-area-inset-top) + 14px) 16px 2px; }
-.diff-badge.boss { background: color-mix(in srgb, #fbbf24 22%, transparent); color: #fcd34d; }
+.diff-badge.boss { background: color-mix(in srgb, var(--dt-gold) 22%, transparent); color: var(--dt-gold); }
 .diff-badge .ic svg { width: 17px; height: 17px; }
 
 .tool .ic { display: flex; }
