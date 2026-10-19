@@ -172,14 +172,11 @@ function fmtTime(ms) {
 }
 const hintsBalance = () => (typeof progress.hints === 'number' ? progress.hints : STARTING_HINTS);
 
-function todayKey() {
-  const d = new Date();
-  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-}
 function dayKeyFrom(ms) {
   const d = new Date(ms);
   return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
 }
+function todayKey() { return dayKeyFrom(Date.now()); }
 function dailyDifficulty() {
   const diffs = ['easy', 'medium', 'medium', 'hard', 'medium', 'hard', 'expert'];
   return diffs[new Date().getDay()];
